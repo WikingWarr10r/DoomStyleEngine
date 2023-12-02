@@ -3,6 +3,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 static std::string parseShader(const std::string filePath) {
     std::string code;
@@ -90,7 +93,7 @@ int main(void)
     float positions[6] = {
         -0.5f, -0.5f,
          0.0f,  0.5f,
-         0.5f, -0.5
+         0.5f, -0.5f
     };
 
     unsigned int buffer;
@@ -107,14 +110,28 @@ int main(void)
     unsigned int shader = CreateShader(vertexShader, fragmentShader);
     glUseProgram(shader);
 
+    float aspectRatio = 640.0f / 480.0f; 
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
+    glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f));
+
+    GLint modelLoc = glGetUniformLocation(shader, "u_Model");
+    GLint viewLoc = glGetUniformLocation(shader, "u_View");
+    GLint projectionLoc = glGetUniformLocation(shader, "u_Projection");
+
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Draw the triangle
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
-
         glfwPollEvents();
     }
 
