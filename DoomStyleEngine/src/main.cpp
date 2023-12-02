@@ -6,6 +6,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
+#include <sstream>
+
+#include "quad.h"
 
 static std::string parseShader(const std::string filePath) {
     std::string code;
@@ -90,19 +94,14 @@ int main(void)
     const GLubyte* renderer = glGetString(GL_RENDERER);
     std::cout << " on " << vendor << " " << renderer << std::endl;
 
-    float positions[6] = {
-        -0.5f, -0.5f,
-         0.0f,  0.5f,
-         0.5f, -0.5f
+    std::vector<glm::vec3> quadVertices = {
+        glm::vec3(-0.5f, -0.5f, 0.0f),
+        glm::vec3(0.5f, -0.5f, 0.0f),
+        glm::vec3(0.5f, 0.5f, 0.0f),
+        glm::vec3(-0.5f, 0.5f, 0.0f)
     };
 
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    Quad quad(quadVertices);
 
     std::string vertexShader = parseShader("res/shaders/default.vert");
     std::string fragmentShader = parseShader("res/shaders/default.frag");
@@ -110,11 +109,9 @@ int main(void)
     unsigned int shader = CreateShader(vertexShader, fragmentShader);
     glUseProgram(shader);
 
-    float aspectRatio = 640.0f / 480.0f; 
+    float aspectRatio = 640.0f / 480.0f;
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
-    glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     GLint modelLoc = glGetUniformLocation(shader, "u_Model");
     GLint viewLoc = glGetUniformLocation(shader, "u_View");
@@ -124,15 +121,25 @@ int main(void)
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+    double lastTime = 0;
     while (!glfwWindowShouldClose(window))
     {
+        double currentTime = glfwGetTime();
+        double deltaTime = currentTime - lastTime;
+
+        double fps = 1 / deltaTime;
+
+        std::ostringstream ss;
+        ss << "Engine | FPS: " << static_cast<int>(fps);
+        glfwSetWindowTitle(window, ss.str().c_str());
+
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Draw the triangle
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        quad.render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+        lastTime = glfwGetTime();
     }
 
     glDeleteProgram(shader);

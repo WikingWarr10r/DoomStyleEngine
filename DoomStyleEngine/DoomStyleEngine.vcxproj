@@ -140,10 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\quad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\default.frag" />
     <None Include="res\shaders\default.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\quad.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
