@@ -1,6 +1,26 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <fstream>
+#include <string>
+
+static std::string parseShader(const std::string filePath) {
+    std::string code;
+    std::string line;
+    std::ifstream file(filePath);
+
+    if (!file.is_open()) {
+        std::cout << "Failed to open shader file: " << filePath << std::endl;
+        return "";
+    }
+
+    while (getline(file, line)) {
+        code += line;
+        code += "\n";
+    }
+    file.close();
+    return code;
+}
 
 static unsigned int CompileShader(unsigned int type, const std::string& source)
 {
@@ -17,7 +37,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         char* message = (char*)alloca(length * sizeof(char));
         glGetShaderInfoLog(id, length, &length, message);
-        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << "shader" << std::endl;
+        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader" << std::endl;
         std::cout << message << std::endl;
         glDeleteShader(id);
         return 0;
@@ -81,25 +101,8 @@ int main(void)
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
-    std::string vertexShader =
-        "#version 330 core\n"
-        "\n"
-        "layout(location = 0) in vec4 position;"
-        "\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = position;"
-        "}\n";
-
-    std::string fragmentShader = 
-        "#version 330 core\n"
-        "\n"
-        "layout(location = 0) out vec4 colour;"
-        "\n"
-        "void main()\n"
-        "{\n"
-        "   colour = vec4(1.0, 0.0, 0.0, 1.0);"
-        "}\n";
+    std::string vertexShader = parseShader("res/shaders/default.vert");
+    std::string fragmentShader = parseShader("res/shaders/default.frag");
 
     unsigned int shader = CreateShader(vertexShader, fragmentShader);
     glUseProgram(shader);
