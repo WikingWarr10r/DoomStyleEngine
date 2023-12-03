@@ -28,6 +28,7 @@
   <ItemGroup>
     <None Include="res\shaders\default.vert" />
     <None Include="res\shaders\default.frag" />
+    <None Include="tools\scripts\quantize_texture.py" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\quad.h">
