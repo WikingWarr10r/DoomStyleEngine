@@ -1,4 +1,4 @@
-#include "Quad.h"
+#include "quad.h"
 #include <GL/glew.h>
 
 Quad::Quad(const std::vector<glm::vec3>& quadPoints) {

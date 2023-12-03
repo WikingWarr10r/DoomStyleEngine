@@ -1,8 +1,10 @@
 #version 330 core
 
-layout(location = 0) out vec4 colour;
+in vec2 TexCoord; // Input texture coordinates from vertex shader
+
+out vec4 colour;
 
 void main()
 {
-   colour = vec4(0.2, 0.5, 0.7, 1.0);
+    colour = vec4(1.0, 1.0, 0.5, 1.0);
 }
