@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\quad.cpp" />
     <ClCompile Include="src\shader.cpp" />
@@ -149,6 +150,7 @@
     <None Include="tools\scripts\quantize_texture.py" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\quad.h" />
     <ClInclude Include="src\shader.h" />
   </ItemGroup>

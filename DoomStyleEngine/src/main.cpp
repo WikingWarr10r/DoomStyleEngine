@@ -10,6 +10,7 @@
 #include <sstream>
 #include "quad.h"
 #include "shader.h"
+#include "camera.h"
 
 int main(void)
 {
@@ -46,6 +47,10 @@ int main(void)
 
     Shader shader("res/shaders/default.vert", "res/shaders/default.frag");
 
+    Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     double lastTime = 0;
     while (!glfwWindowShouldClose(window))
     {
@@ -65,7 +70,7 @@ int main(void)
         glm::mat4 model = glm::mat4(1.0f);
         shader.setMat4("u_Model", model);
 
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 view = camera.getViewMatrix();
         shader.setMat4("u_View", view);
 
         float aspectRatio = 640.0f / 480.0f;
@@ -73,6 +78,8 @@ int main(void)
         shader.setMat4("u_Projection", projection);
 
         quad.render();
+
+        camera.processInput(window, deltaTime);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
