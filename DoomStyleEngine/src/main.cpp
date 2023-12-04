@@ -14,24 +14,6 @@
 #include "camera.h"
 #include "quadbatch.h"
 
-std::vector<glm::vec3> generateVertices(glm::vec3 startPoint, glm::vec3 endPoint, float height)
-{
-    glm::vec3 lowStart = glm::vec3(startPoint.x, -height / 2, startPoint.z);
-    glm::vec3 lowEnd = glm::vec3(endPoint.x, -height / 2, endPoint.z);
-    
-    glm::vec3 highEnd = glm::vec3(endPoint.x, height / 2, endPoint.z);
-    glm::vec3 highStart = glm::vec3(startPoint.x, height / 2, startPoint.z);
-
-    std::vector<glm::vec3> quadVertices = {
-        lowStart,
-        lowEnd,
-        highEnd,
-        highStart
-    };
-    
-    return quadVertices;
-}
-
 int main(void)
 {
     GLFWwindow* window;
