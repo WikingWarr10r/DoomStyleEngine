@@ -8,9 +8,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <sstream>
+
 #include "quad.h"
 #include "shader.h"
 #include "camera.h"
+#include "quadbatch.h"
 
 std::vector<glm::vec3> generateVertices(glm::vec3 startPoint, glm::vec3 endPoint, float height)
 {
@@ -54,9 +56,14 @@ int main(void)
     const GLubyte* renderer = glGetString(GL_RENDERER);
     std::cout << " on " << vendor << " " << renderer << std::endl;
 
-    std::vector<glm::vec3> quadVertices = generateVertices(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(0.5f, 0.0f, 0.0f), 1.0f);
+    QuadBatch quadBatch;
 
-    Quad quad(quadVertices);
+    std::vector<glm::vec3> quadVertices1 = quadBatch.generateVertices(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(0.5f, 0.0f, 0.0f), 1.0f);
+    std::vector<glm::vec3> quadVertices2 = quadBatch.generateVertices(glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(0.5f, 0.0f, 1.0f), 1.0f);
+
+    quadBatch.addQuad(quadVertices1);
+    quadBatch.addQuad(quadVertices2);
+
 
     Shader shader("res/shaders/default.vert", "res/shaders/default.frag");
 
@@ -90,7 +97,7 @@ int main(void)
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
         shader.setMat4("u_Projection", projection);
 
-        quad.render();
+        quadBatch.render();
 
         camera.processInput(window, deltaTime);
 
