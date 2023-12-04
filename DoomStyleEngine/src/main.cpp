@@ -12,6 +12,24 @@
 #include "shader.h"
 #include "camera.h"
 
+std::vector<glm::vec3> generateVertices(glm::vec3 startPoint, glm::vec3 endPoint, float height)
+{
+    glm::vec3 lowStart = glm::vec3(startPoint.x, -height / 2, startPoint.z);
+    glm::vec3 lowEnd = glm::vec3(endPoint.x, -height / 2, endPoint.z);
+    
+    glm::vec3 highEnd = glm::vec3(endPoint.x, height / 2, endPoint.z);
+    glm::vec3 highStart = glm::vec3(startPoint.x, height / 2, startPoint.z);
+
+    std::vector<glm::vec3> quadVertices = {
+        lowStart,
+        lowEnd,
+        highEnd,
+        highStart
+    };
+    
+    return quadVertices;
+}
+
 int main(void)
 {
     GLFWwindow* window;
@@ -36,12 +54,7 @@ int main(void)
     const GLubyte* renderer = glGetString(GL_RENDERER);
     std::cout << " on " << vendor << " " << renderer << std::endl;
 
-    std::vector<glm::vec3> quadVertices = {
-        glm::vec3(-0.5f, -0.5f, 0.0f),
-        glm::vec3(0.5f, -0.5f, 0.0f),
-        glm::vec3(0.5f, 0.5f, 0.0f),
-        glm::vec3(-0.5f, 0.5f, 0.0f)
-    };
+    std::vector<glm::vec3> quadVertices = generateVertices(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(0.5f, 0.0f, 0.0f), 1.0f);
 
     Quad quad(quadVertices);
 
