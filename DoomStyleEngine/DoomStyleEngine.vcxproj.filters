@@ -35,6 +35,7 @@
     <None Include="res\shaders\default.vert" />
     <None Include="res\shaders\default.frag" />
     <None Include="tools\scripts\quantize_texture.py" />
+    <None Include="tools\scripts\level_editor.py" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\quad.h">
