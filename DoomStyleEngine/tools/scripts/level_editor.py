@@ -21,7 +21,7 @@ to_delete = None
 def draw_walls():
     for idx, wall in enumerate(walls):
         if type(wall) == tuple:
-            pygame.draw.line(screen, black if idx != to_delete else red, wall[:2], wall[2:], 2)
+            pygame.draw.line(screen, white if idx != to_delete else red, wall[:2], wall[2:], 2)
 
 def draw_preview_line(start_pos, end_pos):
     pygame.draw.line(screen, gray, start_pos, end_pos, 2)
@@ -96,7 +96,7 @@ drawing = False
 start_pos = None
 
 while running:
-    screen.fill(white)
+    screen.fill(black)
     generate_mid_points()
 
     for event in pygame.event.get():
