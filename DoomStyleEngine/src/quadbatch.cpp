@@ -27,23 +27,19 @@ void QuadBatch::render() const {
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    // Calculate the total size of vertex data needed for all quads
     size_t totalSize = 0;
     for (const auto& quad : quadVertices) {
         totalSize += quad.size() * sizeof(glm::vec3);
     }
 
-    // Reserve space in the VBO for all quad data
     glBufferData(GL_ARRAY_BUFFER, totalSize, nullptr, GL_DYNAMIC_DRAW);
 
-    // Upload quad vertex data to the VBO
     size_t offset = 0;
     for (const auto& quad : quadVertices) {
         glBufferSubData(GL_ARRAY_BUFFER, offset, quad.size() * sizeof(glm::vec3), quad.data());
         offset += quad.size() * sizeof(glm::vec3);
     }
 
-    // Draw all quads
     for (size_t i = 0; i < quadVertices.size(); ++i) {
         Quad quad(quadVertices[i]);
         quad.render();
