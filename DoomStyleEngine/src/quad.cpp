@@ -1,8 +1,8 @@
 #include "quad.h"
 #include <GL/glew.h>
 
-Quad::Quad(const std::vector<glm::vec3>& quadPoints) {
-    setupQuad(quadPoints);
+Quad::Quad(const std::vector<glm::vec3>& quadPoints, const std::vector<glm::vec2>& texCoords) {
+    setupQuad(quadPoints, texCoords);
     setupBuffers();
 }
 
@@ -18,12 +18,13 @@ Quad::~Quad() {
     glDeleteBuffers(1, &EBO);
 }
 
-void Quad::setupQuad(const std::vector<glm::vec3>& quadPoints) {
-    if (quadPoints.size() != 4) {
+void Quad::setupQuad(const std::vector<glm::vec3>& quadPoints, const std::vector<glm::vec2>& texCoords) {
+    if (quadPoints.size() != 4 || texCoords.size() != 4) {
         return;
     }
 
     vertices = quadPoints;
+    textureCoords = texCoords;
 }
 
 void Quad::setupBuffers() {
@@ -43,6 +44,9 @@ void Quad::setupBuffers() {
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0); 
 
     glBindVertexArray(0);
 }

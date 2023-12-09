@@ -13,17 +13,16 @@
 #include "shader.h"
 #include "camera.h"
 #include "quadbatch.h"
+#include "texture.h"
 
-int main(void)
-{
+int main(void) {
     GLFWwindow* window;
 
     if (!glfwInit())
         return -1;
 
     window = glfwCreateWindow(640, 480, "Engine", NULL, NULL);
-    if (!window)
-    {
+    if (!window) {
         glfwTerminate();
         return -1;
     }
@@ -43,9 +42,16 @@ int main(void)
     std::vector<glm::vec3> quadVertices1 = quadBatch.generateVertices(glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(0.5f, 0.0f, 0.0f), 1.0f);
     std::vector<glm::vec3> quadVertices2 = quadBatch.generateVertices(glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(0.5f, 0.0f, 1.0f), 1.0f);
 
-    quadBatch.addQuad(quadVertices1);
-    quadBatch.addQuad(quadVertices2);
+    std::vector<glm::vec2> texCoords1 = QuadBatch::generateTextureCoords();
+    std::vector<glm::vec2> texCoords2 = QuadBatch::generateTextureCoords();
 
+    quadBatch.addQuad(quadVertices1, texCoords1);
+    quadBatch.addQuad(quadVertices2, texCoords2);
+
+    Texture texture;
+    if (!texture.loadTexture("res/textures/cobble.png")) {
+        std::cout << "Failed to load texture" << std::endl;
+    }
 
     Shader shader("res/shaders/default.vert", "res/shaders/default.frag");
 
@@ -54,8 +60,7 @@ int main(void)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     double lastTime = 0;
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - lastTime;
 
@@ -68,6 +73,8 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
+
+        texture.bind();
 
         glm::mat4 model = glm::mat4(1.0f);
         shader.setMat4("u_Model", model);

@@ -144,6 +144,7 @@
     <ClCompile Include="src\quad.cpp" />
     <ClCompile Include="src\quadbatch.cpp" />
     <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\default.frag" />
@@ -156,9 +157,11 @@
     <ClInclude Include="src\quadbatch.h" />
     <ClInclude Include="src\quad.h" />
     <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\brick.jpg" />
+    <Image Include="res\textures\cobble.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

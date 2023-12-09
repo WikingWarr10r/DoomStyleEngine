@@ -7,8 +7,13 @@ QuadBatch::QuadBatch() {
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW); 
+
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -19,8 +24,9 @@ QuadBatch::~QuadBatch() {
     quadVertices.clear();
 }
 
-void QuadBatch::addQuad(const std::vector<glm::vec3>& quadPoints) {
+void QuadBatch::addQuad(const std::vector<glm::vec3>& quadPoints, const std::vector<glm::vec2>& texCoords) {
     quadVertices.push_back(quadPoints);
+    quadTextureCoords.push_back(texCoords);
 }
 
 void QuadBatch::render() const {
@@ -35,13 +41,15 @@ void QuadBatch::render() const {
     glBufferData(GL_ARRAY_BUFFER, totalSize, nullptr, GL_DYNAMIC_DRAW);
 
     size_t offset = 0;
-    for (const auto& quad : quadVertices) {
-        glBufferSubData(GL_ARRAY_BUFFER, offset, quad.size() * sizeof(glm::vec3), quad.data());
-        offset += quad.size() * sizeof(glm::vec3);
+    for (size_t i = 0; i < quadVertices.size(); ++i) {
+        glBufferSubData(GL_ARRAY_BUFFER, offset, quadVertices[i].size() * sizeof(glm::vec3), quadVertices[i].data());
+        offset += quadVertices[i].size() * sizeof(glm::vec3);
     }
 
+    glBufferData(GL_ARRAY_BUFFER, quadTextureCoords.size() * sizeof(glm::vec2), quadTextureCoords.data(), GL_DYNAMIC_DRAW);
+
     for (size_t i = 0; i < quadVertices.size(); ++i) {
-        Quad quad(quadVertices[i]);
+        Quad quad(quadVertices[i], quadTextureCoords[i]);
         quad.render();
     }
 
@@ -64,4 +72,15 @@ std::vector<glm::vec3> QuadBatch::generateVertices(glm::vec3 startPoint, glm::ve
     };
 
     return quadVertices;
+}
+
+std::vector<glm::vec2> QuadBatch::generateTextureCoords() {
+    std::vector<glm::vec2> textureCoords = {
+        glm::vec2(0.0f, 0.0f),
+        glm::vec2(1.0f, 0.0f),
+        glm::vec2(1.0f, 1.0f),
+        glm::vec2(0.0f, 1.0f)
+    };
+
+    return textureCoords;
 }
