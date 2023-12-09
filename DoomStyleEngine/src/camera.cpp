@@ -58,3 +58,7 @@ void Camera::processInput(GLFWwindow* window, float deltaTime) {
 
     updateCameraVectors();
 }
+
+glm::vec3 Camera::getPosition() const {
+    return position;
+}

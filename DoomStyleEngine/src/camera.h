@@ -15,6 +15,8 @@ public:
 
     void processInput(GLFWwindow* window, float deltaTime);
 
+    glm::vec3 getPosition() const;
+
 private:
     glm::vec3 position;
     glm::vec3 front;

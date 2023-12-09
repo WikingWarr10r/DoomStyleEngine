@@ -1,5 +1,7 @@
 #include "quadbatch.h"
 #include <GL/glew.h>
+#include <algorithm> 
+#include <glm/gtx/norm.hpp>
 
 QuadBatch::QuadBatch() {
     glGenVertexArrays(1, &VAO);
@@ -57,6 +59,35 @@ void QuadBatch::render() const {
     glBindVertexArray(0);
 }
 
+void QuadBatch::reorderQuads(const glm::vec3& cameraPosition) {
+    std::vector<std::pair<float, size_t>> distances;
+    distances.reserve(quadVertices.size());
+
+    for (size_t i = 0; i < quadVertices.size(); ++i) {
+        glm::vec3 midpoint = calculateMidpoint(quadVertices[i]);
+
+        float distanceSquared = glm::length2(midpoint - cameraPosition);
+
+        distances.emplace_back(distanceSquared, i);
+    }
+
+    std::sort(distances.rbegin(), distances.rend());
+
+    std::vector<std::vector<glm::vec3>> sortedQuads;
+    std::vector<std::vector<glm::vec2>> sortedTexCoords;
+
+    sortedQuads.reserve(quadVertices.size());
+    sortedTexCoords.reserve(quadTextureCoords.size());
+
+    for (const auto& dist : distances) {
+        sortedQuads.push_back(quadVertices[dist.second]);
+        sortedTexCoords.push_back(quadTextureCoords[dist.second]);
+    }
+
+    quadVertices = sortedQuads;
+    quadTextureCoords = sortedTexCoords;
+}
+
 std::vector<glm::vec3> QuadBatch::generateVertices(glm::vec3 startPoint, glm::vec3 endPoint, float height) {
     glm::vec3 lowStart = glm::vec3(startPoint.x, -height / 2, startPoint.z);
     glm::vec3 lowEnd = glm::vec3(endPoint.x, -height / 2, endPoint.z);
@@ -83,4 +114,12 @@ std::vector<glm::vec2> QuadBatch::generateTextureCoords() {
     };
 
     return textureCoords;
+}
+
+glm::vec3 QuadBatch::calculateMidpoint(const std::vector<glm::vec3>& quad) {
+    glm::vec3 sum(0.0f);
+    for (const auto& vertex : quad) {
+        sum += vertex;
+    }
+    return sum / static_cast<float>(quad.size());
 }

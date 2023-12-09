@@ -86,6 +86,9 @@ int main(void) {
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
         shader.setMat4("u_Projection", projection);
 
+
+        glm::vec3 cameraPosition = camera.getPosition();
+        quadBatch.reorderQuads(cameraPosition);
         quadBatch.render();
 
         camera.processInput(window, deltaTime);
